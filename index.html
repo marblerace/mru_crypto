@@ -125,20 +125,17 @@
 
     </script>
 
-    <!-- Farcaster Miniapp SDK -->
     <script src="https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/index.umd.js" onload="onSdkLoaded()"></script>
     <script>
-      // Function to run once the SDK is loaded
       function onSdkLoaded() {
         if (window.sdk) {
-          sdk.actions.ready(); // Use actions.ready() as per your requirement
+          sdk.actions.ready();
           console.log("Farcaster SDK loaded and ready");
         } else {
           console.error("SDK not available after loading");
         }
       }
 
-      // Expose the ChargeForRace function for Unity to call
       window.ChargeForRace = async function(tokenId, amount, recipient) {
         try {
           const result = await sdk.actions.sendToken({
