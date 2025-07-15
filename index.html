@@ -125,12 +125,17 @@
 
     </script>
 
-    <!-- Farcaster SDK -->
-    <script src="https://unpkg.com/@farcaster/frame-sdk@latest/dist/sdk.umd.js" onload="onSdkLoaded()"></script>
+    <!-- Farcaster Miniapp SDK -->
+    <script src="https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/index.umd.js" onload="onSdkLoaded()"></script>
     <script>
       // Function to run once the SDK is loaded
       function onSdkLoaded() {
-        sdk.ready(); // Now safe to call, as sdk is defined
+        if (window.sdk) {
+          sdk.actions.ready(); // Use actions.ready() as per your requirement
+          console.log("Farcaster SDK loaded and ready");
+        } else {
+          console.error("SDK not available after loading");
+        }
       }
 
       // Expose the ChargeForRace function for Unity to call
@@ -141,10 +146,8 @@
             amount: amount,
             recipientAddress: recipient
           });
-          // Send the JSON string back to Unity's FarcasterBridge
           SendMessage('FarcasterBridge', 'OnChargeComplete', JSON.stringify(result));
         } catch (err) {
-          // Handle unexpected errors
           const errorResult = JSON.stringify({ success: false, error: err.message });
           SendMessage('FarcasterBridge', 'OnChargeComplete', errorResult);
         }
