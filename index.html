@@ -125,13 +125,15 @@
 
     </script>
 
-    <!-- <<<<<< Add this Farcaster integration block >>>>>> -->
-    <script src="https://unpkg.com/@farcaster/frame-sdk@latest/dist/sdk.umd.js"></script>
+    <!-- Farcaster SDK -->
+    <script src="https://unpkg.com/@farcaster/frame-sdk@latest/dist/sdk.umd.js" onload="onSdkLoaded()"></script>
     <script>
-      // Tell Farcaster we’re ready (removes its splash)
-      sdk.ready();
+      // Function to run once the SDK is loaded
+      function onSdkLoaded() {
+        sdk.ready(); // Now safe to call, as sdk is defined
+      }
 
-      // Expose the ChargeForRace function Unity will call via DllImport
+      // Expose the ChargeForRace function for Unity to call
       window.ChargeForRace = async function(tokenId, amount, recipient) {
         try {
           const result = await sdk.actions.sendToken({
@@ -139,10 +141,10 @@
             amount: amount,
             recipientAddress: recipient
           });
-          // Send the JSON string back into your Unity FarcasterBridge
+          // Send the JSON string back to Unity's FarcasterBridge
           SendMessage('FarcasterBridge', 'OnChargeComplete', JSON.stringify(result));
         } catch (err) {
-          // In case of unexpected errors
+          // Handle unexpected errors
           const errorResult = JSON.stringify({ success: false, error: err.message });
           SendMessage('FarcasterBridge', 'OnChargeComplete', errorResult);
         }
