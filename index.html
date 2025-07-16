@@ -4,6 +4,21 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity Web Player | Marble Race Ultimate</title>
+    <meta name="fc:frame" content='{
+      "version":"1",
+      "imageUrl":"https://marblerace.github.io/mru_crypto/Build/race.jpg",
+      "button":{
+        "title":"Play Marble Race",
+        "action":{
+          "type":"launch_frame",
+          "name":"Marble Race Ultimate",
+          "url":"https://marblerace.github.io/mru_crypto/",
+          "splashImageUrl":"https://marblerace.github.io/mru_crypto/TemplateData/favicon.ico",
+          "splashBackgroundColor":"#000000"
+        }
+      }
+    }' />
+    
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
@@ -55,13 +70,13 @@
       var loaderUrl = buildUrl + "/race.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/race.data.gz",
-        frameworkUrl: buildUrl + "/race.framework.js.gz",
-        codeUrl: buildUrl + "/race.wasm.gz",
+        dataUrl: buildUrl + "/race.data",
+        frameworkUrl: buildUrl + "/race.framework.js",
+        codeUrl: buildUrl + "/race.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Bluza",
         productName: "Marble Race Ultimate",
-        productVersion: "3.5.0",
+        productVersion: "0.1",
         showBanner: unityShowBanner,
       };
 
@@ -129,7 +144,8 @@
     <script>
       function onSdkLoaded() {
         if (window.sdk) {
-          sdk.actions.ready();
+          //sdk.actions.ready();
+          sdk.ready();
           console.log("Farcaster SDK loaded and ready");
         } else {
           console.error("SDK not available after loading");
