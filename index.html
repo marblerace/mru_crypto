@@ -143,10 +143,7 @@
     <script type="module">
       import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
 
-      // Tell Farcaster the Mini App is ready
-      sdk.ready()
-
-      // Define function Unity will call
+      // Unity bridge function exposed to C#
       window.ChargeForRace = async function(tokenId, amount, recipient) {
         try {
           const result = await sdk.actions.sendToken({
@@ -160,6 +157,42 @@
           SendMessage('FarcasterBridge', 'OnChargeComplete', errorResult)
         }
       }
+
+      // Wait until Unity is fully ready before calling sdk.actions.ready()
+      const waitForUnity = () => {
+        const canvas = document.querySelector("#unity-canvas");
+        if (!canvas) return;
+
+        const buildUrl = "Build";
+        const config = {
+          arguments: [],
+          dataUrl: buildUrl + "/race.data",
+          frameworkUrl: buildUrl + "/race.framework.js",
+          codeUrl: buildUrl + "/race.wasm",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "Bluza",
+          productName: "Marble Race Ultimate",
+          productVersion: "0.1",
+          showBanner: unityShowBanner
+        };
+
+        createUnityInstance(canvas, config, (progress) => {
+          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+        }).then(async (unityInstance) => {
+          document.querySelector("#unity-loading-bar").style.display = "none";
+          document.querySelector("#unity-fullscreen-button").onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+
+          // ✅ NOW tell Farcaster the Mini App is ready
+          await sdk.actions.ready();
+          console.log("✅ sdk.actions.ready() called successfully");
+        }).catch((err) => {
+          console.error("Unity load error", err);
+        });
+      };
+
+      waitForUnity();
     </script>
 
   </body>
