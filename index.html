@@ -140,18 +140,13 @@
 
     </script>
 
-    <script src="https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/index.umd.js" onload="onSdkLoaded()"></script>
-    <script>
-      function onSdkLoaded() {
-        if (window.sdk) {
-          //sdk.actions.ready();
-          sdk.ready();
-          console.log("Farcaster SDK loaded and ready");
-        } else {
-          console.error("SDK not available after loading");
-        }
-      }
+    <script type="module">
+      import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
 
+      // Tell Farcaster the Mini App is ready
+      sdk.ready()
+
+      // Define function Unity will call
       window.ChargeForRace = async function(tokenId, amount, recipient) {
         try {
           const result = await sdk.actions.sendToken({
@@ -159,12 +154,13 @@
             amount: amount,
             recipientAddress: recipient
           });
-          SendMessage('FarcasterBridge', 'OnChargeComplete', JSON.stringify(result));
+          SendMessage('FarcasterBridge', 'OnChargeComplete', JSON.stringify(result))
         } catch (err) {
-          const errorResult = JSON.stringify({ success: false, error: err.message });
-          SendMessage('FarcasterBridge', 'OnChargeComplete', errorResult);
+          const errorResult = JSON.stringify({ success: false, error: err.message })
+          SendMessage('FarcasterBridge', 'OnChargeComplete', errorResult)
         }
-      };
+      }
     </script>
+
   </body>
 </html>
